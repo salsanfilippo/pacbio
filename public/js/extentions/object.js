@@ -65,8 +65,8 @@ if (!Object.extensions) {
      */
     hashCode: function (obj) {
                 if ((typeof obj === 'undefined') ||
-                  (obj === null) ||
-                  (obj.length === 0))
+                    (obj === null) ||
+                    (obj.length === 0))
                   return 0;
 
                 var str = JSON.stringify(obj);

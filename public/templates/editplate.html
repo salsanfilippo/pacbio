@@ -1,0 +1,50 @@
+<div align="center" style="margin-top: 10em;">
+  <div style="width: 520px">
+    <table class="legend pull-right" style="margin-bottom: 2em;">
+      <caption class="legend-caption">Legend</caption>
+      <tbody>
+      <tr>
+        <td class="color-box"></td>
+        <td class="legend-name" title="{{ NOTCONFIGURED }}">{{ NOTCONFIGURED }}</td>
+      </tr>
+      <tr ng-repeat="sample in samples | filter: filterSample track by sample._id">
+        <td class="color-box" style="background-color: {{ sample.color }};"></td>
+        <td class="legend-name" title="{{ sample.name }}">{{ sample.name }}</td>
+      </tr>
+      </tbody>
+      <tfoot>
+      <tr>
+        <td colspan="2" style="">
+          <div align="right" style="width: 100%">
+            <a href="" ng-click="">Manage</a>
+          </div>
+        </td>
+      </tr>
+      </tfoot>
+    </table>
+    <div class='wells'>
+      <div>
+        <div class='vertical-well-header' style="width: 40px;"></div>
+        <div class=''
+             ng-repeat="cell in range(12) track by $index">
+          <div class='horizontal-well-header'>{{ $index+1 }}</div>
+        </div>
+      </div>
+
+      <div class='vertical-center-well-row'
+           ng-repeat="wellRow in plate.wellRows">
+        <div class='vertical-well-header'>{{ wellRow.name }}</div>
+        <div class=''
+             ng-repeat="wellCell in wellRow.cells">
+          <div class='well-cell'
+               title="{{ (wellCell.sample != null) ? 'Sample Name: %s\nReaction Time: %d'.sprintf(wellCell.sample.name,
+                                                                                                  wellCell.reactionTime)
+                                                   : NOTCONFIGURED }}"
+               ng-style="{ backgroundColor: wellCell.sample != null ? wellCell.sample.color : 'white' }"
+               ng-click='wellClick(wellCell)'>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

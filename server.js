@@ -14,8 +14,8 @@
  * @property string {object} Include String extension methods
  **/
 var Includes = {
-                 object: require('./public/js/object.js'),
-                 string: require('./public/js/string.js')
+                 object: require('./public/js/extentions/object.js'),
+                 string: require('./public/js/extentions/string.js')
                };
 
 // Module imports
@@ -44,14 +44,14 @@ global.applicationRoot = applicationRoot;
  * @constant RC_PUBLIC_KEY
  * @type {String}
  */
-var RC_PUBLIC_KEY = '6Leguf0SAAAAABh6LiAD36ISmoBdacap4tMebrhz';
+var RC_PUBLIC_KEY = '6LdvPQUTAAAAAMG-LyRIfMJnDnwwXVMAUXQZ6DNe';
 
 /**
  * @description The Google Recaptcha Api Private Key.
  * @constant RC_PRIVATE_KEY
  * @type {String}
  */
-var RC_PRIVATE_KEY = '6Leguf0SAAAAAJzntgEjN-1OTV06mrk9Rj_9rulH';
+var RC_PRIVATE_KEY = '6LdvPQUTAAAAAMqTyiJTJ5izBH03qdXfiBSAfykr';
 
 /**
  * @description The port number express will bind.
@@ -102,14 +102,14 @@ var multipartHandler = multipart();
 var app = express();
 
 // Use Smtp Protocol to send Email
-global.smtpTransport = mailer.createTransport('SMTP',                             // 'Gmail'
+global.smtpTransport = mailer.createTransport('SMTP',
                                               {
-                                                host: 'mail.sanfilippo.ws',
+                                                host: 'mail.yourdomain.com',
                                                 port: 465,
                                                 secureConnection: true,
                                                 auth: {
-                                                  user: 'no-reply@sanfilippo.ws', // 'chumster.postmaster@gmail.com'
-                                                  pass: 'FuzzyL0gic!'             // 'Chumster!'
+                                                  user: 'username',
+                                                  pass: 'password'
                                                 },
                                                 debug: false
                                               });

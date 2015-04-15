@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html ng-app="pacbio">
+<head>
+  <base href="/" />
+  <meta charset="UTF-8">
+  <title>PACBIO RS II Plate Editor</title>
+
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+  <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Gruppo|Roboto:400,400italic,700,700italic|Roboto+Slab:400,700|Open+Sans:400italic,700italic,400,700|Alegreya+Sans+SC:400,700,400italic,700italic' type='text/css'>
+  <link rel="stylesheet" href="/css/colorpicker-min.css">
+  <link rel="stylesheet" href="/css/app.css" />
+
+  <script>
+    document.write('<base href="' + document.location + '" />');
+  </script>
+</head>
+<body ng-cloak>
+<nav class="navbar navbar-fixed-top" ng-controller="MainMenuController">
+  <div class="container-fluid container-nav">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/home">
+          <img alt="PacBio" src="/img/pacbio_logo.png">
+        </a>
+      </div>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="navbar-inner"> <!-- collapse navbar-collapse -->
+      <ul class="nav navbar-nav">
+        <li><a href="/home">Home</a></li>
+        <li><a href="/editplate">Edit Plate</a></li>
+        <li><a href="/managesamples">Manage Samples</a></li>
+      </ul>
+
+      <ul class="nav navbar-nav pull-right" ng-hide="isAuthenticated()">
+        <li><a href="/login">Login</a></li>
+        <li><a href="/register">Register</a></li>
+      </ul>
+      <ul class="nav navbar-nav pull-right" ng-show="isAuthenticated()">
+        <li class="dropdown">
+          <a class="dropdown-toggle" href="#">Welcome {{user.firstName}}</a>
+          <ul class="dropdown-menu">
+            <li><a href="/editprofile">Edit Profile</a></li>
+            <li><a href="#" ng-click="logout()">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+      <-!-->
+      <form class="navbar-form navbar-right" role="search" ng-submit="search()">
+        <div class="input-group" style="padding-right: 35px;">
+          <input type="text" class="form-control" placeholder="Search" ng-model="searchTerms">
+          <span class="input-group-addon" ng-click="search()"><i class="fa fa-search"></i></span>
+        </div>
+      </form>
+      <-->
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<div class="container">
+  <div id="loaderDiv" loader class="hidden">
+    <img src="img/spinner.gif" class="ajax-loader"/>
+  </div>
+  <ng-view>
+  </ng-view>
+</div>
+
+<!-- Load from CDN -->
+<script src="//www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
+
+<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+
+<script src="//code.angularjs.org/1.3.15/angular.js"></script>
+<script src="js/ui-bootstrap-tpls-0.12.0-SNAPSHOT.js"></script>
+<!--script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.12.0.js"></script-->
+<script src="js/ui-keypress.js"></script>
+<script src="//code.angularjs.org/1.3.15/angular-route.js"></script>
+<script src="//code.angularjs.org/1.3.15/angular-resource.js"></script>
+<script src="//code.angularjs.org/1.3.15/angular-messages.js"></script>
+
+<script src="bower_components/ng-file-upload/angular-file-upload-shim.min.js"></script>
+<script src="bower_components/ng-file-upload/angular-file-upload.min.js"></script>
+<script src="bower_components/angular-autoFields-bootstrap/autofields.js"></script>
+<script src="bower_components/angular-autoFields-bootstrap/autofields-bootstrap.js"></script>
+<script src="bower_components/angular-re-captcha/angular-re-captcha.js"></script>
+<script src="bower_components/jsonfn/jsonfn.js"></script>
+<script src="js/bootstrap-colorpicker-module.min.js"></script>
+
+<!-- Load Locally -->
+<script src="js/extentions/object.js"></script>
+<script src="js/extentions/string.js"></script>
+<script src="js/extentions/number.js"></script>
+<script src="js/extentions/date.js"></script>
+<script src="js/app.js"></script>
+
+<script src="js/interceptors/HttpInterceptor.js"></script>
+
+<script src="js/directives/Loader.js"></script>
+<script src="js/directives/Gravatar.js"></script>
+
+<script src="js/models/Models.js"></script>
+
+<script src="js/services/AuthService.js"></script>
+<script src="js/services/GravatarUrlBuilder.js"></script>
+<script src="js/services/SampleService.js"></script>
+
+<script src="js/controllers/MainMenuController.js"></script>
+<script src="js/controllers/HomeController.js"></script>
+<script src="js/controllers/HomeController.js"></script>
+<script src="js/controllers/EditPlateController.js"></script>
+<script src="js/controllers/ManageSamplesController.js"></script>
+<script src="js/controllers/ResetPasswordController.js"></script>
+<script src="js/controllers/ProfileController.js"></script>
+
+</body>
+</html>

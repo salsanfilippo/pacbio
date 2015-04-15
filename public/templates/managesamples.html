@@ -1,0 +1,164 @@
+<div align="center" style="margin-top: 10em;">
+  <div style="width: 750px;" align="left">
+    <div class="row col-xs-12" style="display: table;">
+      <div class="form-group pull-left col-xs-6">
+        <div class="">
+          <label for="samplesList">Select a Sample</label>
+          <select id="samplesList"
+                  ng-click="setValue($event)"
+                  ui-keyup="{ 'up down home end pageup pagedown
+                               shift-up shift-down shift-home shift-end shift-pageup shift-pagedown' : 'setValue($event)' }"
+                  class="form-control"
+                  size="6"
+                  tabindex="1"
+                  style="padding: 4px 0px;
+                             height: 128px;
+                             overflow-x: hidden;
+                             overflow-y: scroll;">
+            <option ng-repeat="sample in samples | filter: filterSamples track by sample._id"
+                    ng-selected='selectedSample === sample'
+                    sample-id="{{ sample._id.toString() }}"
+                    style="padding: 0px 4px;">{{ sample.name }}</option>
+          </select>
+        </div>
+        <div class="" style="margin-top: 6px;">
+          <div class="pull-right">
+            <button class="btn btn-mini btn-success"
+                    style="padding: 2px 8px;"
+                    ng-click="add()"
+                    popover="Add&nbsp;New&nbsp;Sample"
+                    popover-placement="bottom"
+                    popover-trigger="mouseenter">
+              <i class="fa fa-plus"></i>
+            </button>
+            <!-- Delete Sample Button -->
+            <button class="btn btn-mini btn-danger"
+                    style="padding: 2px 8px;"
+                    ng-click="remove()"
+                    popover="Remove&nbsp;Selected&nbsp;Sample"
+                    popover-placement="bottom"
+                    popover-trigger="mouseenter">
+              <i class="fa fa-minus"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <form name="sampleForm" novalidate>
+        <!-- Sample Editor Container -->
+        <div>
+          <label for="sampleName">Edit Sample</label>
+          <div class="form-group control-group edit-group col-xs-6">
+            <div class="" style="">
+              <!-- Sample Name Label -->
+              <label for="sampleName">Name</label>
+                  <span class="label label-danger"
+                        style="padding-bottom: .15em;
+                               border-radius: 7px;"
+                        ng-if="sampleForm.sampleName.$dirty && 
+                               (sampleForm.sampleName.$error.required == true ||
+                                sampleForm.sampleName.$error.maxlength == true ||
+                                sampleForm.sampleName.$error.pattern == true)"
+                        popover-window-placement="bottom"
+                        popover-window-trigger="mouseenter"
+                        popover-window="sample-name-validation.html">!</span>
+
+
+              <div class="input-group-sm" style="width: 100%;">
+                <!-- Sample Name Editor -->
+                <input id="sampleName"
+                       name="sampleName"
+                       type='text'
+                       class="form-control"
+                       style="font-size: inherit;"
+                       ng-model="working.name"
+                       ng-maxlength="65"
+                       ng-pattern="/^[a-zA-Z0-9 ]*$/"
+                       required/>
+              </div>
+            </div>
+            <div style="padding-top: 5px;">
+              <!-- Sample Color Label -->
+              <label for="sampleColor">Color</label>
+                  <span class="label label-danger validation-indicator"
+                        ng-if="sampleForm.sampleColor.$dirty && 
+                               (sampleForm.sampleColor.$error.required == true ||
+                                sampleForm.sampleColor.$error.colorreserved == true ||
+                                sampleForm.sampleColor.$error.colorinuse == true)"
+                        popover-window-placement="bottom"
+                        popover-window-trigger="mouseenter"
+                        popover-window="sample-color-validation.html">!</span>
+
+              <!-- Sample Color Picker -->
+              <div class="control-group" style="width: 100%;">
+                <div id="sampleColor"
+                     name="sampleColor"
+                     class="color-box"
+                     style="background-color: {{ working.color }}"
+                     colorpicker
+                     colorpicker-position="bottom"
+                     ng-model="working.color">
+                </div>
+              </div>
+            </div>
+
+            <!-- Apply Button -->
+            <div align="right">
+              <p style="float: left;
+                            color: #737373;
+                            font-size: 12px;">Update Name and Color</p>
+              <button class="btn btn-mini btn-info"
+                      style="margin-top: 6px; padding: 2px 6px;"
+                      ng-click="apply()"
+                      popover="Apply&nbsp;Changes&nbsp;to&nbsp;Sample"
+                      popover-placement="bottom"
+                      popover-trigger="mouseenter">
+                <i class="fa fa-edit"
+                   style="margin-right: 8px;"></i>Apply
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div id="center" class="col-xs-12" style="clear: both;">
+      <h2>Instructions</h2>
+      <div class="node">
+        <ul class="normalli">
+          <li>To edit a sample, select it in the list and enter the new values. Click Apply to save changes.</li>
+          <li>Click '<b>+</b>' to add a new sample, update new values and click 'apply to save changes.</li>
+          <li>Click '<b>-</b>' to remove a sample. Note: a sample cannot be removed if it is assigned to one or more wells.</li>
+        </ul>
+        Rules:
+        <ul class="normalli">
+          <li>Sample name is required.</li>
+          <li>Sample name must be alpha-numeric and can contain spaces.</li>
+          <li>Sample name cannot exceed 65 characters.</li>
+          <li>Sample name must be unique.</li>
+          <li>Sample color is required.</li>
+          <li>Sample color cannot be a reserved color (e.g. White is 'Not Configured).'</li>
+          <li>Sample color must be unique.</li>
+        </ul>
+        Hover over <span class="label label-danger validation-indicator">!</span>&nbsp;to display validation errors.
+      </div>
+    </div>
+    <div class="row col-xs-12" style="clear: both; display: none;">
+      <pre>{{selectedSample | json}}</pre>
+      <div ng-show="selected">Selection from a modal: {{ selected }}</div>
+      <div style="clear: both;">{{sampleForm.sampleName.$error}}</div>
+    </div>
+  </div>
+</div>
+
+<script type="text/ng-template" id="sample-name-validation.html">
+  <div class="panel">
+    <div class="panel-header">Validation Errors</div>
+    <div class="panel-body node">
+      <ul class="normalli">
+        <li ng-if="sampleForm.sampleName.$error.required">Sample name is required</li>
+        <li ng-if="sampleForm.sampleName.$error.maxlength">Sample name must be no longer than 64 chars</li>
+        <li ng-if="sampleForm.sampleName.$error.pattern">Sample name must be alphanumeric and may contain whitespace</li>
+      </ul>
+    </div>
+  </div>
+</script>
