@@ -62,7 +62,7 @@ input {
 }
 
 .navbar {
-    z-index: 10000;
+    z-index: 1000;
     border-style: none;
     /*margin: 8px 8px 0px 8px;*/
 }
@@ -281,6 +281,11 @@ input {
     padding-left: 4px !important;
 }
 
+.typeahead-dropdown {
+    font-family: 'Open Sans', sans-serif !important;
+    font-size: 14px !important;
+}
+
 .typeahead-color-box {
     border: 1px solid black;
     width: 18px;
@@ -312,7 +317,7 @@ input {
     padding-bottom: .2em;
 }
 
-.color-box {
+.legend-color-box {
     border: solid 1px black;
     width: 21px;
     padding: 2px;;
@@ -383,7 +388,7 @@ ul li, ol li {
 ul li {
     padding: 0;
     margin: 0;
-    list-style-position: ouside;
+    list-style-position: inside;
     line-height: normal;
 }
 
@@ -437,4 +442,17 @@ label {
 .validation-indicator {
     padding-bottom: .15em;
     border-radius: 7px;
+    position: relative;
+    top: -2px;
+}
+
+.info {
+    font-size: 10pt;
+    clear: both;
+    float: left;
+}
+.info i {
+    font-size: 1.2em;
+    color: blue;
+    padding-right: 4px;
 }

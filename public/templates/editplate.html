@@ -2,13 +2,13 @@
   <div style="width: 520px">
     <table class="legend pull-right" style="margin-bottom: 2em;">
       <caption class="legend-caption">Legend</caption>
-      <tbody>
+      <tbody style="height: 144px; display: block; overflow-y: auto;">
       <tr>
-        <td class="color-box"></td>
+        <td class="legend-color-box"></td>
         <td class="legend-name" title="{{ NOTCONFIGURED }}">{{ NOTCONFIGURED }}</td>
       </tr>
       <tr ng-repeat="sample in samples | filter: filterSample track by sample._id">
-        <td class="color-box" style="background-color: {{ sample.color }};"></td>
+        <td class="legend-color-box" style="background-color: {{ sample.color }};"></td>
         <td class="legend-name" title="{{ sample.name }}">{{ sample.name }}</td>
       </tr>
       </tbody>
@@ -16,12 +16,15 @@
       <tr>
         <td colspan="2" style="">
           <div align="right" style="width: 100%">
-            <a href="" ng-click="">Manage</a>
+            <a href="" ng-click="manageSamples()">Manage</a>
           </div>
         </td>
       </tr>
       </tfoot>
     </table>
+    <div class="info">
+      <i class="fa fa-info-circle" stylXe="font-size: 1.2em; color: blue; padding-right: 4px;"></i>Click on a well to configure it. Hover over a well to display its configuration.
+    </div>
     <div class='wells'>
       <div>
         <div class='vertical-well-header' style="width: 40px;"></div>
@@ -41,10 +44,120 @@
                                                                                                   wellCell.reactionTime)
                                                    : NOTCONFIGURED }}"
                ng-style="{ backgroundColor: wellCell.sample != null ? wellCell.sample.color : 'white' }"
-               ng-click='wellClick(wellCell)'>
+               ng-click="wellClick(wellCell)">
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<script type="text/ng-template" id="samplesTypeahead.html">
+  <a class="typeahead-dropdown">
+    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    <span class="typeahead-color-box" style="border: 1px solid black; background-color: {{ match.model.color }};"><span>
+  </a>
+</script>
+
+<script type="text/ng-template" id="editWell.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Configure Well: {{ working.location.toString() }}</h3>
+  </div>
+  <div class="modal-body">
+    <form name="wellForm" novalidate>
+      <div class="col-xs-6">
+      <label for="sample">Sample</label>
+      <span class="label label-danger validation-indicator"
+            ng-if="wellForm.sample.$dirty &&
+                   (wellForm.sample.$error.required == true)"
+            popover-window-placement="bottom"
+            popover-window-trigger="mouseenter"
+            popover-window="well-sample-validation.html">!</span>
+      <input id="sample"
+             name="sample"
+             type="text"
+             ng-model="working.sample"
+             ng-focus="onFocus($event)"
+             placeholder="Select Sample"
+             typeahead="sample as sample.name for sample in samples | filter: {name:$viewValue}"
+             typeahead-template-url="samplesTypeahead.html"
+             typeahead-on-select="sampleOnSelect($item, $model, $label)"
+             class="form-control">
+      </div>
+      <div class="col-xs-6">
+        <label for="reactionTime">Reaction Time (minutes)</label>
+        <span class="label label-danger validation-indicator"
+              ng-if="wellForm.reactionTime.$dirty &&
+                     (wellForm.reactionTime.$error.required == true ||
+                      wellForm.reactionTime.$error.min == true ||
+                      wellForm.reactionTime.$error.max == true)"
+              popover-window-placement="bottom"
+              popover-window-trigger="mouseenter"
+              popover-window="well-reactionTime-validation.html">!</span>
+        <input id="reactionTime"
+               name="reactionTime"
+               type="number"
+               ng-model="working.reactionTime"
+               min="5"
+               max="90"
+               class="form-control" />
+      </div>
+    </form>
+    <div id="center" class="col-xs-12" style="clear: both;">
+      <h2>Instructions</h2>
+      <div class="node">
+        <ul class="normalli">
+          <li>To configure the well, select a sample and specify a reaction time. Click 'Apply' to save changes.</li>
+          <li>Click 'Reset' to return the well to an unconfigured state.</li>
+          <li>Click 'Cancel' to discard edits to the well.</li>
+        </ul>
+        Rules:
+        <ul class="normalli">
+          <li>Sample selection is required.</li>
+          <li>Reaction time is required.</li>
+          <li>Reaction time must be no less than 5 minutes.</li>
+          <li>Reaction time must be no greater than 90 minutes.</li>
+        </ul>
+        Hover over <span class="label label-danger validation-indicator">!</span>&nbsp;to display validation errors.
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-danger"
+            style="width: 80px;"
+            ng-click="cancel()">Cancel</button>
+    <button class="btn btn-primary"
+            style="width: 80px;"
+            ng-click="reset()"><i class="fa fa-repeat" style="margin-right: 8px;"></i>Reset</button>
+    <button class="btn btn-info"
+            style="width: 80px;"
+            ng-click="apply(wellForm)"
+            ng-disabled="wellForm.$invalid"><i class="fa fa-edit" style="margin-right: 8px;"></i>Apply</button>
+  </div>
+</script>
+
+<script type="text/ng-template" id="well-sample-validation.html">
+  <div class="panel">
+    <div class="panel-header">Validation Errors</div>
+    <div class="panel-body node" style="padding-bottom: 0px;">
+      <ul class="normalli" style="padding-bottom: 0px;">
+        <li ng-if="wellForm.sample.$error.required">You must select a Sample</li>
+      </ul>
+    </div>
+  </div>
+</script>
+
+<script type="text/ng-template" id="well-reactionTime-validation.html">
+  <div class="panel">
+    <div class="panel-header">Validation Errors</div>
+    <div class="panel-body node" style="padding-bottom: 0px;">
+      <ul class="normalli" style="padding-bottom: 0px;">
+        <li ng-if="wellForm.reactionTime.$error.required">Reaction time is required</li>
+        <li ng-if="wellForm.reactionTime.$error.min">Reaction time must be no less than 5 minutes</li>
+        <li ng-if="wellForm.reactionTime.$error.max">Reaction time must be no more than 90 minutes</li>
+      </ul>
+    </div>
+  </div>
+</script>
+
+

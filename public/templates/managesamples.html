@@ -11,6 +11,7 @@
                   class="form-control"
                   size="6"
                   tabindex="1"
+                  autofocus
                   style="padding: 4px 0px;
                              height: 128px;
                              overflow-x: hidden;
@@ -52,16 +53,15 @@
             <div class="" style="">
               <!-- Sample Name Label -->
               <label for="sampleName">Name</label>
-                  <span class="label label-danger"
-                        style="padding-bottom: .15em;
-                               border-radius: 7px;"
-                        ng-if="sampleForm.sampleName.$dirty && 
-                               (sampleForm.sampleName.$error.required == true ||
-                                sampleForm.sampleName.$error.maxlength == true ||
-                                sampleForm.sampleName.$error.pattern == true)"
-                        popover-window-placement="bottom"
-                        popover-window-trigger="mouseenter"
-                        popover-window="sample-name-validation.html">!</span>
+              <span class="label label-danger validation-indicator"
+                    ng-if="sampleForm.sampleName.$dirty &&
+                           (sampleForm.sampleName.$error.required == true ||
+                            sampleForm.sampleName.$error.maxlength == true ||
+                            sampleForm.sampleName.$error.pattern == true ||
+                            sampleForm.sampleName.$error.unique == true)"
+                    popover-window-placement="bottom"
+                    popover-window-trigger="mouseenter"
+                    popover-window="sample-name-validation.html">!</span>
 
 
               <div class="input-group-sm" style="width: 100%;">
@@ -83,8 +83,8 @@
                   <span class="label label-danger validation-indicator"
                         ng-if="sampleForm.sampleColor.$dirty && 
                                (sampleForm.sampleColor.$error.required == true ||
-                                sampleForm.sampleColor.$error.colorreserved == true ||
-                                sampleForm.sampleColor.$error.colorinuse == true)"
+                                sampleForm.sampleColor.$error.reserved == true ||
+                                sampleForm.sampleColor.$error.unique == true)"
                         popover-window-placement="bottom"
                         popover-window-trigger="mouseenter"
                         popover-window="sample-color-validation.html">!</span>
@@ -104,12 +104,9 @@
 
             <!-- Apply Button -->
             <div align="right">
-              <p style="float: left;
-                            color: #737373;
-                            font-size: 12px;">Update Name and Color</p>
               <button class="btn btn-mini btn-info"
                       style="margin-top: 6px; padding: 2px 6px;"
-                      ng-click="apply()"
+                      ng-click="apply(sampleForm)"
                       popover="Apply&nbsp;Changes&nbsp;to&nbsp;Sample"
                       popover-placement="bottom"
                       popover-trigger="mouseenter">
@@ -136,7 +133,7 @@
           <li>Sample name cannot exceed 65 characters.</li>
           <li>Sample name must be unique.</li>
           <li>Sample color is required.</li>
-          <li>Sample color cannot be a reserved color (e.g. White is 'Not Configured).'</li>
+          <li>Sample color cannot be a reserved color (e.g. White is 'Not Fully Configured).'</li>
           <li>Sample color must be unique.</li>
         </ul>
         Hover over <span class="label label-danger validation-indicator">!</span>&nbsp;to display validation errors.
@@ -144,8 +141,6 @@
     </div>
     <div class="row col-xs-12" style="clear: both; display: none;">
       <pre>{{selectedSample | json}}</pre>
-      <div ng-show="selected">Selection from a modal: {{ selected }}</div>
-      <div style="clear: both;">{{sampleForm.sampleName.$error}}</div>
     </div>
   </div>
 </div>
@@ -153,11 +148,25 @@
 <script type="text/ng-template" id="sample-name-validation.html">
   <div class="panel">
     <div class="panel-header">Validation Errors</div>
-    <div class="panel-body node">
-      <ul class="normalli">
+    <div class="panel-body node" style="padding-bottom: 0px;">
+      <ul class="normalli" style="padding-bottom: 0px;">
         <li ng-if="sampleForm.sampleName.$error.required">Sample name is required</li>
-        <li ng-if="sampleForm.sampleName.$error.maxlength">Sample name must be no longer than 64 chars</li>
+        <li ng-if="sampleForm.sampleName.$error.maxlength">Sample name must be no longer than 64 characters</li>
+        <li ng-if="sampleForm.sampleName.$error.unique">Another Sample with the specified name already exists</li>
         <li ng-if="sampleForm.sampleName.$error.pattern">Sample name must be alphanumeric and may contain whitespace</li>
+      </ul>
+    </div>
+  </div>
+</script>
+
+<script type="text/ng-template" id="sample-color-validation.html">
+  <div class="panel">
+    <div class="panel-header">Validation Errors</div>
+    <div class="panel-body node" style="padding-bottom: 0px;">
+      <ul class="normalli" style="padding-bottom: 0px;">
+        <li ng-if="sampleForm.sampleColor.$error.required">Sample color is required</li>
+        <li ng-if="sampleForm.sampleColor.$error.reserved">Sample color must not be a reserved color</li>
+        <li ng-if="sampleForm.sampleColor.$error.unique">Another Sample with the specified color already exists</li>
       </ul>
     </div>
   </div>

@@ -8,7 +8,6 @@ app.service('sampleService',
                            new Sample(UUID.new(), 'Sample Four', '#FF00FF'),
                            new Sample(UUID.new(), 'Sample Five', '#00FFFF') ];
 
-
     this.getAll = function() {
       return $rootScope.samples;
     };
@@ -19,12 +18,12 @@ app.service('sampleService',
 
     this.colorExists = function(color, id) {
       return $filter('filter')($rootScope.samples, { color: color,
-                                                     _id: { value: '!'+id } }).length>0;
+                                                     _id: { value: '!'+id } }, true).length>0;
     };
 
     this.nameExists = function(name, id) {
       return $filter('filter')($rootScope.samples, { name: name,
-                                                     _id: { value: '!'+id } }).length>0;
+                                                     _id: { value: '!'+id } }, true).length>0;
     };
 
     this.add = function(sample) {
@@ -39,12 +38,12 @@ app.service('sampleService',
     };
 
     this.remove = function(sample, canRemoveFn) {
-      var index = this.samples.indexOf(sample);
+      var index = $rootScope.samples.indexOf(sample);
       if (index==-1)
         return
 
       if (canRemoveFn(sample))
-        return this.samples.splice(index, 1);
+        return $rootScope.samples.splice(index, 1);
 
       return;
     };

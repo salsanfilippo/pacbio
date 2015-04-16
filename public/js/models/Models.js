@@ -3,9 +3,12 @@
 var module = angular.module('models.module', []);
 
 module.factory('Plate',
-  function (Well, WellLocation, Sample) {
-    function Plate() {
+  function (UUID, Well, WellLocation, Sample) {
+    function Plate(id, name) {
       var CHAR_CODE_A = 65;
+
+      this._id = id || UUID.new();
+      this.name = name || 'Plate %s'.sprintf(Math.abs(this._id.toString().hashCode()));
 
       this.wells = [];
       this.wellRows = [];
@@ -20,6 +23,10 @@ module.factory('Plate',
           this.wells.push(well);
         }
       }
+    }
+
+    Plate.prototype.toString = function() {
+      return this.name;
     }
 
     return Plate;

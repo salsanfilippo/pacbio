@@ -1,7 +1,7 @@
 'use strict';
 
 app.controller('ManageSamplesController',
-  function ManageSamplesController($scope, $location, $filter, sampleService, Sample, Plate, Well) {
+  function ManageSamplesController($scope, $location, $filter, plateService, sampleService, Sample, Plate, Well) {
     $scope.samples = sampleService.getAll();
 
     $scope.add = function() {
@@ -9,6 +9,21 @@ app.controller('ManageSamplesController',
 
       if (!Object.extensions.isNullOrUndefined(newSample))
         $scope.selectedSample = newSample;
+    };
+
+    $scope.remove = function() {
+      if (!sampleService.remove($scope.selectedSample, plateService.canRemove)) {
+        alert("Cannot delete sample because it is assigned to at least one well.");
+      }
+    };
+
+    $scope.apply = function(form) {
+      if (form.$valid) {
+        $scope.selectedSample.name = $scope.working.name;
+        $scope.selectedSample.color = $scope.working.color;
+      } else {
+        alert('Changes cannot be applied when validation errors exist.');
+      }
     };
 
     $scope.findSample = function(id) {
@@ -28,26 +43,35 @@ app.controller('ManageSamplesController',
         $scope.selectedSample = $scope.findSample(id);
     };
 
-    $scope.sampleOnChange = function(item) {
-      if (item == null)
-        return;
-
-      if (item.id === 0) {
-        var id = $scope.samples.length;
-        var color = Math.ceil(Math.random() * 16777215);
-
-        $scope.samples.push({ id: id, name: 'New Sample ' + id, color: '#'+Number.d2h(color) });
-        $scope.sample = $scope.samples[$scope.samples.length - 1];
-
-        $scope.open();
-      } else {
-        $scope.well.name = item.name;
-        $scope.selected.item = item;
+    $scope.$watch("working.name", function() {
+      if ($scope.sampleForm.sampleName.$dirty) {
+        if (!angular.isUndefined($scope.working.name)) {
+          $scope.sampleForm
+                .sampleName
+                .$setValidity("unique",
+                              !sampleService.nameExists($scope.working.name,
+                                                        $scope.working._id));
+        }
+        console.log('Name: "%s", "%s, Length: %d"'.sprintf($scope.working.name,
+                                                           $scope.sampleForm.sampleName.$viewValue,
+                                                           $scope.sampleForm.sampleName.$viewValue.length));
       }
-    };
+    });
 
     $scope.$watch("working.color", function() {
       if ($scope.sampleForm.sampleColor.$dirty) {
+        if (!angular.isUndefined($scope.working.color)) {
+          $scope.sampleForm
+                .sampleColor
+                .$setValidity("reserved",
+                              !'#ffffff'.equals($scope.working.color));
+
+          $scope.sampleForm
+                .sampleColor
+                .$setValidity("unique",
+                              !sampleService.colorExists($scope.working.color,
+                                                         $scope.working._id));
+        }
         console.log('Color: %s'.sprintf($scope.working.color));
       }
     });
@@ -60,5 +84,4 @@ app.controller('ManageSamplesController',
     });
 
     $scope.selectedSample = $scope.samples[0];
-    $scope.working = angular.copy($scope.selectedSample);
   });
