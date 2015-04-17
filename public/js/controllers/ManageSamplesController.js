@@ -2,6 +2,10 @@
 
 app.controller('ManageSamplesController',
   function ManageSamplesController($scope, $location, $filter, plateService, sampleService, Sample, Plate, Well) {
+    $scope.editPlate = function () {
+      $location.url('/editplate', true);
+    }
+
     $scope.samples = sampleService.getAll();
 
     $scope.add = function() {
