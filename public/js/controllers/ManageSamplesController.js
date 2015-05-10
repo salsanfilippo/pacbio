@@ -39,7 +39,7 @@ app.controller('ManageSamplesController',
       var id;
 
       if (element[0].tagName.toUpperCase() === 'SELECT')
-        element = angular.element(element[0].selectedOptions[0]);
+        element = angular.element(element[0][element[0].selectedIndex]);
 
       id = element.attr('sample-id');
       if ($scope.selectedSample === null ||

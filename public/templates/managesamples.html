@@ -94,9 +94,9 @@
                 <div id="sampleColor"
                      name="sampleColor"
                      class="color-box"
-                     style="background-color: {{ working.color }}"
                      colorpicker
                      colorpicker-position="bottom"
+                     ng-style="{ 'background-color': working.color }"
                      ng-model="working.color">
                 </div>
               </div>

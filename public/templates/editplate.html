@@ -8,7 +8,7 @@
         <td class="legend-name" title="{{ NOTCONFIGURED }}">{{ NOTCONFIGURED }}</td>
       </tr>
       <tr ng-repeat="sample in samples | filter: filterSample track by sample._id">
-        <td class="legend-color-box" style="background-color: {{ sample.color }};"></td>
+        <td class="legend-color-box" ng-style="{ 'background-color': sample.color }"></td>
         <td class="legend-name" title="{{ sample.name }}">{{ sample.name }}</td>
       </tr>
       </tbody>
@@ -54,8 +54,11 @@
 
 <script type="text/ng-template" id="samplesTypeahead.html">
   <a class="typeahead-dropdown">
-    <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
-    <span class="typeahead-color-box" style="border: 1px solid black; background-color: {{ match.model.color }};"><span>
+    <div>
+      <span class="typeahead-color-box"
+            ng-style="{ 'background-color': match.model.color }"></span>
+      <span style="margin-left: 5px;" bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
+    </div>
   </a>
 </script>
 
